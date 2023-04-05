@@ -14,20 +14,35 @@ async function getMovies(){
     `)
 }
 
-async function updateMovie(){
-    
+async function updateMovie(id: number){
+    return await db.query(`
+        UPDATE movies
+        SET status = true
+        WHERE id = $1
+    `, [id])    
 }
 
 async function postReview(){
 
 }
 
-async function deleteMovie(){
+async function deleteMovie(id: number){
+    return await db.query(`
+        DELETE FROM movies
+        WHERE id = $1
+    `, [id])
     
 }
 
 async function getMoviesByPlataform(){
     
+}
+
+async function getMovieById(id: number){
+    return await db.query(`
+        SELECT * FROM movies
+        WHERE id = $1
+    `, [id])
 }
 
 async function getDuplicated(newMovie: Movie){
@@ -45,5 +60,6 @@ export default {
     postReview,
     deleteMovie,
     getMoviesByPlataform,
-    getDuplicated
+    getDuplicated,
+    getMovieById
 }

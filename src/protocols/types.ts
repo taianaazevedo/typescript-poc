@@ -5,3 +5,8 @@ export type Movie = {
     genre: string,
     status: boolean
 }
+
+export type Review = {
+    rate: number,
+    comment: string
+}

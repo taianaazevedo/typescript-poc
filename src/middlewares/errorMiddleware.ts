@@ -5,6 +5,10 @@ export function handleApplicationErrors(err: Error, req: Request, res: Response,
     if (err.name === "ConflictError") {
       return res.status(httpStatus.CONFLICT).send({ message: err.message });
     }
+
+    if (err.name === "Movie duplicated") {
+      return res.status(httpStatus.CONFLICT).send({ message: err.message });
+    }
   
     if (err.name === "NotFoundError") {
       return res.status(httpStatus.NOT_FOUND).send({message: err.message });

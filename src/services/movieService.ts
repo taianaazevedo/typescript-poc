@@ -16,15 +16,22 @@ async function getMovies(){
     return rows
 }
 
-async function updateMovie(){
-    
+async function updateMovie(id: number){
+    const {rowCount} = await movieRepository.getMovieById(id)
+    if(!rowCount) throw errors.notFoundError()
+
+    await movieRepository.updateMovie(id)   
 }
 
 async function postReview(){
 
 }
 
-async function deleteMovie(){
+async function deleteMovie(id: number){
+    const {rowCount} = await movieRepository.getMovieById(id)
+    if(!rowCount) throw errors.notFoundError()
+
+    await movieRepository.deleteMovie(id)   
     
 }
 
