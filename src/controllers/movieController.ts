@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import movieService from "../services/movieService.js"
-import { Movie } from "../protocols/types.js"
+import { Movie, Review } from "../protocols/types.js"
 
 
 async function createMovie(req: Request, res: Response, next: NextFunction){
@@ -28,8 +28,9 @@ async function getMovies(req: Request, res: Response, next: NextFunction){
 
 async function updateMovie(req: Request, res: Response, next: NextFunction){
     const id: number = +req.params.id
+    const newReview = req.body as Review
     try {
-        await movieService.updateMovie(id)
+        await movieService.updateMovie(id, newReview)
 
         return res.sendStatus(200)        
     } catch (error) {

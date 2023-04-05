@@ -1,5 +1,5 @@
 import { db } from "../config/database.js";
-import { Movie } from "../protocols/types.js"
+import { Movie, Review } from "../protocols/types.js"
 
 async function createMovie(newMovie: Movie){
     await db.query(`
@@ -14,12 +14,17 @@ async function getMovies(){
     `)
 }
 
-async function updateMovie(id: number){
-    return await db.query(`
+async function updateMovie(id: number, newReview: Review){
+    await db.query(`
         UPDATE movies
         SET status = true
         WHERE id = $1
-    `, [id])    
+    `, [id])  
+    
+    await db.query(`
+        INSERT INTO review (rate, comment, movie_id)
+        VALUES ($1, $2, $3)
+    `, [newReview.rate, newReview.comment, id])
 }
 
 async function postReview(){

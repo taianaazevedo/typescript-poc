@@ -1,5 +1,5 @@
 import movieRepository from "../repositories/movieRepository.js"
-import { Movie } from "../protocols/types.js"
+import { Movie, Review } from "../protocols/types.js"
 import errors from "../errors/index.js"
 
 async function createMovie(newMovie: Movie){
@@ -16,14 +16,14 @@ async function getMovies(){
     return rows
 }
 
-async function updateMovie(id: number){
+async function updateMovie(id: number, newReview: Review){
     const {rowCount} = await movieRepository.getMovieById(id)
     if(!rowCount) throw errors.notFoundError()
 
-    await movieRepository.updateMovie(id)   
+    await movieRepository.updateMovie(id, newReview)   
 }
 
-async function postReview(){
+async function postReview(newReview: Review){
 
 }
 
