@@ -16,13 +16,19 @@ async function getMovies(){
     return rows
 }
 
-async function updateMovie(id: number, newReview: Review){
+async function updateMovie(id: number, ){
     const {rowCount} = await movieRepository.getMovieById(id)
     if(!rowCount) throw errors.notFoundError()
 
-    await movieRepository.updateMovie(id, newReview)   
+    await movieRepository.updateMovie(id)   
 }
 
+async function postReview(id: number, newReview: Review){
+    const {rowCount} = await movieRepository.getMovieById(id)
+    if(!rowCount) throw errors.notFoundError()
+
+    await movieRepository.postReview(id, newReview)
+}
 
 async function deleteMovie(id: number){
     const {rowCount} = await movieRepository.getMovieById(id)
@@ -43,6 +49,7 @@ export default {
     createMovie,
     getMovies,
     updateMovie,
+    postReview,
     deleteMovie,
     getMoviesByPlataformOrGenre
 }

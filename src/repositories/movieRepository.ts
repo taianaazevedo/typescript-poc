@@ -14,17 +14,20 @@ async function getMovies(){
     `)
 }
 
-async function updateMovie(id: number, newReview: Review){
+async function updateMovie(id: number){
     await db.query(`
         UPDATE movies
         SET status = true
         WHERE id = $1
     `, [id])  
     
+}
+
+async function postReview(id: number, newReview: Review){
     await db.query(`
-        INSERT INTO review (rate, comment, movie_id)
-        VALUES ($1, $2, $3)
-    `, [newReview.rate, newReview.comment, id])
+    INSERT INTO review (rate, comment, movie_id)
+    VALUES ($1, $2, $3)
+`, [newReview.rate, newReview.comment, id])
 }
 
 
@@ -66,5 +69,6 @@ export default {
     deleteMovie,
     getMoviesByPlataformOrGenre,
     getDuplicated,
-    getMovieById
+    getMovieById,
+    postReview
 }

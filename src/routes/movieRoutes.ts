@@ -8,8 +8,9 @@ const movieRoutes = Router()
 
 movieRoutes.post("/", validateSchema(movieSchema), movieController.createMovie)
 movieRoutes.get("/allmovies", movieController.getMovies)
-movieRoutes.get("/", movieController.getMoviesByPlataformOrGenre) //só falta essa 
-movieRoutes.post("/:id", validateSchema(reviewSchema), movieController.updateMovie) 
+movieRoutes.get("/", movieController.getMoviesByPlataformOrGenre)
+movieRoutes.patch("/:id", movieController.updateMovie)
+movieRoutes.post("/:id", validateSchema(reviewSchema), movieController.postReview) 
 movieRoutes.delete("/:id", movieController.deleteMovie)
 
 export default movieRoutes

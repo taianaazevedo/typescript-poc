@@ -28,9 +28,9 @@ async function getMovies(req: Request, res: Response, next: NextFunction){
 
 async function updateMovie(req: Request, res: Response, next: NextFunction){
     const id: number = +req.params.id
-    const newReview = req.body as Review
+  
     try {
-        await movieService.updateMovie(id, newReview)
+        await movieService.updateMovie(id)
 
         return res.sendStatus(200)        
     } catch (error) {
@@ -38,6 +38,20 @@ async function updateMovie(req: Request, res: Response, next: NextFunction){
     }
     
 }
+
+
+async function postReview(req: Request, res: Response, next: NextFunction){
+    const id: number = +req.params.id
+    const newReview = req.body as Review
+    try {
+        await movieService.postReview(id, newReview)
+
+        return res.sendStatus(200)        
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 async function deleteMovie(req: Request, res: Response, next: NextFunction){
     const id: number = +req.params.id
@@ -69,5 +83,6 @@ export default {
     getMovies,
     updateMovie,
     deleteMovie,
+    postReview,
     getMoviesByPlataformOrGenre
 }
