@@ -1,5 +1,5 @@
 import { db } from "../config/database.js";
-import { Movie, Review } from "../protocols/types.js"
+import { Movie, Query, Review } from "../protocols/types.js"
 
 async function createMovie(newMovie: Movie){
     await db.query(`
@@ -27,9 +27,6 @@ async function updateMovie(id: number, newReview: Review){
     `, [newReview.rate, newReview.comment, id])
 }
 
-async function postReview(){
-
-}
 
 async function deleteMovie(id: number){
     return await db.query(`
@@ -39,7 +36,11 @@ async function deleteMovie(id: number){
     
 }
 
-async function getMoviesByPlataform(){
+async function getMoviesByPlataformOrGenre(query: Query){
+    return await db.query(`
+        SELECT COUNT(*) FROM movies
+        WHERE LOWER (plataform) LIKE ($1) OR LOWER (genre) LIKE ($1)
+    `, [`%${query}%`])
     
 }
 
@@ -62,9 +63,8 @@ export default {
     createMovie,
     getMovies,
     updateMovie,
-    postReview,
     deleteMovie,
-    getMoviesByPlataform,
+    getMoviesByPlataformOrGenre,
     getDuplicated,
     getMovieById
 }

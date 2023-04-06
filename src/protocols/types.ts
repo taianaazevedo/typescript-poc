@@ -10,3 +10,7 @@ export type Review = {
     rate: number,
     comment: string
 }
+
+export type Query = {
+    query: string
+}

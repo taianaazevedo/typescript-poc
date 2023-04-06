@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import movieService from "../services/movieService.js"
-import { Movie, Review } from "../protocols/types.js"
+import { Movie, Query, Review } from "../protocols/types.js"
 
 
 async function createMovie(req: Request, res: Response, next: NextFunction){
@@ -34,19 +34,9 @@ async function updateMovie(req: Request, res: Response, next: NextFunction){
 
         return res.sendStatus(200)        
     } catch (error) {
-        console.log(error)
         next(error)
     }
     
-}
-
-async function postReview(req: Request, res: Response, next: NextFunction){
-      try {
-        
-    } catch (error) {
-        next(error)
-    }
-
 }
 
 async function deleteMovie(req: Request, res: Response, next: NextFunction){
@@ -61,10 +51,14 @@ async function deleteMovie(req: Request, res: Response, next: NextFunction){
     
 }
 
-async function getMoviesByPlataform(req: Request, res: Response, next: NextFunction){
+async function getMoviesByPlataformOrGenre(req: Request, res: Response, next: NextFunction){
+    const query = req.query.query as Query
     try {
-        
+        const result = await movieService.getMoviesByPlataformOrGenre(query)
+
+        return res.send(result).status(200)
     } catch (error) {
+        console.log(error)
         next(error)
     }
     
@@ -74,7 +68,6 @@ export default {
     createMovie,
     getMovies,
     updateMovie,
-    postReview,
     deleteMovie,
-    getMoviesByPlataform
+    getMoviesByPlataformOrGenre
 }
