@@ -51,8 +51,8 @@ async function getMoviesByPlataformOrGenre(search: string):Promise<movies[]> {
   return await prisma.movies.findMany({
     where: {
         OR: [
-          { plataform: { contains: search } },
-          { genre: { contains: search } },
+          { plataform: { contains: search, mode: 'insensitive' } },
+          { genre: { contains: search, mode: 'insensitive'} },
         ],
       }
   });
