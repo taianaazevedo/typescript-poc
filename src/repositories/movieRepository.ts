@@ -1,74 +1,86 @@
-import { db } from "../config/database.js";
-import { Movie, Query, Review } from "../protocols/types.js"
+import { movies, review } from "@prisma/client";
+import prisma from "../config/database.js";
 
-async function createMovie(newMovie: Movie){
-    await db.query(`
-    INSERT INTO movies (name, plataform, genre)
-    VALUES ($1, $2, $3)    
-    `, [newMovie.name, newMovie.plataform, newMovie.genre])
+async function createMovie(newMovie: movies):Promise<movies> {
+  return await prisma.movies.create({
+    data: {
+      name: newMovie.name,
+      plataform: newMovie.plataform,
+      genre: newMovie.genre,
+      status: newMovie.status,
+    },
+  });
 }
 
-async function getMovies(){
-    return await db.query(`
-        SELECT * FROM movies
-    `)
+async function getMovies():Promise<movies[]> {
+  const moviesFound = await prisma.movies.findMany();
+
+  return moviesFound
 }
 
-async function updateMovie(id: number){
-    await db.query(`
-        UPDATE movies
-        SET status = true
-        WHERE id = $1
-    `, [id])  
-    
+async function updateMovie(id: number):Promise<void> {
+  await prisma.movies.update({
+    where: {
+      id,
+    },
+    data: {
+      status: true,
+    },
+  });
 }
 
-async function postReview(id: number, newReview: Review){
-    await db.query(`
-    INSERT INTO review (rate, comment, movie_id)
-    VALUES ($1, $2, $3)
-`, [newReview.rate, newReview.comment, id])
+async function postReview(id: number, newReview: review):Promise<review>{
+  return await prisma.review.create({
+    data: {
+      movie_id: id,
+      comment: newReview.comment,
+      rate: newReview.rate,
+    },
+  });
 }
 
-
-async function deleteMovie(id: number){
-    return await db.query(`
-        DELETE FROM movies
-        WHERE id = $1
-    `, [id])
-    
+async function deleteMovie(id: number):Promise<void> {
+  await prisma.movies.delete({
+    where: {
+      id,
+    },
+  });
 }
 
-async function getMoviesByPlataformOrGenre(query: Query){
-    return await db.query(`
-        SELECT COUNT(*) FROM movies
-        WHERE LOWER (plataform) LIKE ($1) OR LOWER (genre) LIKE ($1)
-    `, [`%${query}%`])
-    
+async function getMoviesByPlataformOrGenre(search: string):Promise<movies[]> {
+  return await prisma.movies.findMany({
+    where: {
+        OR: [
+          { plataform: { contains: search } },
+          { genre: { contains: search } },
+        ],
+      }
+  });
 }
 
-async function getMovieById(id: number){
-    return await db.query(`
-        SELECT * FROM movies
-        WHERE id = $1
-    `, [id])
+async function getMovieById(id: number):Promise<movies> {
+    return await prisma.movies.findFirst({
+        where: {
+            id
+        }
+    })
 }
 
-async function getDuplicated(newMovie: Movie){
-    return await db.query(`
-        SELECT * FROM movies 
-        WHERE name = $1       
-    `, [newMovie.name])
-    
+async function getDuplicated(newMovie: movies):Promise<movies>{
+    return await prisma.movies.findFirst({
+        where: {
+            name: newMovie.name
+        }
+    })
 }
 
 export default {
-    createMovie,
-    getMovies,
-    updateMovie,
-    deleteMovie,
-    getMoviesByPlataformOrGenre,
-    getDuplicated,
-    getMovieById,
-    postReview
-}
+  createMovie,
+  getMovies,
+  updateMovie,
+  deleteMovie,
+  getMoviesByPlataformOrGenre,
+  getDuplicated,
+  getMovieById,
+  postReview,
+};

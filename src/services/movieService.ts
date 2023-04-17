@@ -1,55 +1,61 @@
-import movieRepository from "../repositories/movieRepository.js"
-import { Movie, Review, Query } from "../protocols/types.js"
-import errors from "../errors/index.js"
+import movieRepository from "../repositories/movieRepository.js";
+import errors from "../errors/index.js";
+import { movies, review } from "@prisma/client";
 
-async function createMovie(newMovie: Movie){
-    const {rowCount} = await movieRepository.getDuplicated(newMovie)
-    if(rowCount) throw errors.duplicated(errors)
 
-   return await movieRepository.createMovie(newMovie)
+async function createMovie(newMovie: movies):Promise<movies> {
+  const duplicated = await movieRepository.getDuplicated(newMovie);
+
+  if (duplicated) throw errors.duplicated(errors);
+
+  return await movieRepository.createMovie(newMovie);
 }
 
-async function getMovies(){
-    const {rows, rowCount } = await movieRepository.getMovies()
-    if(!rowCount) throw errors.notFoundError()    
+async function getMovies(): Promise<movies[]> {
+  const allmovies = await movieRepository.getMovies();
 
-    return rows
+  if (!allmovies) throw errors.notFoundError();
+
+  return allmovies;
 }
 
-async function updateMovie(id: number, ){
-    const {rowCount} = await movieRepository.getMovieById(id)
-    if(!rowCount) throw errors.notFoundError()
+async function updateMovie(id: number):Promise<void> {
+  const movie = await movieRepository.getMovieById(id);
 
-    await movieRepository.updateMovie(id)   
+  if (!movie) throw errors.notFoundError();
+
+  await movieRepository.updateMovie(id);
 }
 
-async function postReview(id: number, newReview: Review){
-    const {rowCount} = await movieRepository.getMovieById(id)
-    if(!rowCount) throw errors.notFoundError()
+async function postReview(id: number, newReview: review):Promise<review> {
+  const movieExist = await movieRepository.getMovieById(id);
 
-    await movieRepository.postReview(id, newReview)
+  if (!movieExist) throw errors.notFoundError();
+
+  return await movieRepository.postReview(id, newReview);
 }
 
-async function deleteMovie(id: number){
-    const {rowCount} = await movieRepository.getMovieById(id)
-    if(!rowCount) throw errors.notFoundError()
+async function deleteMovie(id: number):Promise<void> {
+  const movieExist = await movieRepository.getMovieById(id);
 
-    await movieRepository.deleteMovie(id)   
-    
+  if (!movieExist) throw errors.notFoundError();
+
+  await movieRepository.deleteMovie(id);
 }
 
-async function getMoviesByPlataformOrGenre(query: Query){
-    const {rows, rowCount } = await movieRepository.getMoviesByPlataformOrGenre(query)
-    if(!rowCount)  throw errors.notFoundError()
+async function getMoviesByPlataformOrGenre(search: string):Promise<movies[]> {
+  const moviesFound = await movieRepository.getMoviesByPlataformOrGenre(search);
 
-    return rows    
+  if (!moviesFound) throw errors.notFoundError();
+
+  return moviesFound;
 }
 
 export default {
-    createMovie,
-    getMovies,
-    updateMovie,
-    postReview,
-    deleteMovie,
-    getMoviesByPlataformOrGenre
-}
+  createMovie,
+  getMovies,
+  updateMovie,
+  postReview,
+  deleteMovie,
+  getMoviesByPlataformOrGenre,
+};
