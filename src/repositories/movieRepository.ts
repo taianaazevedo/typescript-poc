@@ -1,13 +1,15 @@
 import { movies, review } from "@prisma/client";
-import prisma from "../config/database.js";
+import prisma from "../config/database";
 
-async function createMovie(newMovie: movies):Promise<movies> {
+export type Movie = Omit<movies, "id" | "status">
+
+
+async function createMovie(newMovie: Movie):Promise<Movie> {
   return await prisma.movies.create({
     data: {
       name: newMovie.name,
       plataform: newMovie.plataform,
-      genre: newMovie.genre,
-      status: newMovie.status,
+      genre: newMovie.genre
     },
   });
 }
@@ -66,10 +68,10 @@ async function getMovieById(id: number):Promise<movies> {
     })
 }
 
-async function getDuplicated(newMovie: movies):Promise<movies>{
+async function getDuplicated(newMovie: string):Promise<movies>{
     return await prisma.movies.findFirst({
         where: {
-            name: newMovie.name
+            name: newMovie
         }
     })
 }

@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import movieService from "../services/movieService.js";
-import { movies, review } from "@prisma/client";
-import { Search } from "../protocols/types.js";
+import movieService from "../services/movieService";
+import { review } from "@prisma/client";
+import { Search } from "../protocols/types";
+import { Movie } from "repositories/movieRepository";
 
 async function createMovie(req: Request, res: Response, next: NextFunction) {
-  const newMovie = req.body as movies;
+  const newMovie = req.body as Movie;
 
   try {
     await movieService.createMovie(newMovie);
@@ -19,7 +20,7 @@ async function getMovies(req: Request, res: Response, next: NextFunction) {
   try {
     const result = await movieService.getMovies();
 
-    return res.send(result);
+    return res.send(result).status(200);
   } catch (error) {
     next(error);
   }

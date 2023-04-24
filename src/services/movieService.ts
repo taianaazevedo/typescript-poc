@@ -1,10 +1,10 @@
-import movieRepository from "../repositories/movieRepository.js";
-import errors from "../errors/index.js";
+import movieRepository from "../repositories/movieRepository";
+import errors from "../errors/index";
 import { movies, review } from "@prisma/client";
+import { Movie } from "../repositories/movieRepository";
 
-
-async function createMovie(newMovie: movies):Promise<movies> {
-  const duplicated = await movieRepository.getDuplicated(newMovie);
+async function createMovie(newMovie: Movie):Promise<Movie> {
+  const duplicated = await movieRepository.getDuplicated(newMovie.name);
 
   if (duplicated) throw errors.duplicated(errors);
 
@@ -14,7 +14,7 @@ async function createMovie(newMovie: movies):Promise<movies> {
 async function getMovies(): Promise<movies[]> {
   const allmovies = await movieRepository.getMovies();
 
-  if (!allmovies) throw errors.notFoundError();
+  if (allmovies.length === 0) throw errors.notFoundError();
 
   return allmovies;
 }

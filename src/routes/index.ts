@@ -1,5 +1,5 @@
 import { Router } from "express";
-import movieRoutes from "./movieRoutes.js";
+import movieRoutes from "./movieRoutes";
 
 const routes = Router()
 
